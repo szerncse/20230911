@@ -7,15 +7,15 @@ import { useState } from "react";
 import Nav from "./component/Nav";
 import Store from "./Store";
 import { Provider, useSelector } from "react-redux";
+import Member from "./Pages/Member";
+import Login from "./Pages/Login";
 
 
 
 
 function App() {
-
   
-
-
+console.log(process.env)
 
 
   return (
@@ -60,6 +60,8 @@ return(
   <Nav/>
   <Routes>
     <Route path="/" element={<Main/>}></Route>
+    <Route path="/Member" element={<Member/>}></Route>
+    <Route path="/Login" element={<Login/>}></Route>
   </Routes>
 </ThemeProvider>
 )
