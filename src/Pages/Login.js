@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { firebaseAuth, signInWithEmailAndPassword } from './../firebase'
+import {useNavigate} from 'react-router-dom'
 
 
 const Container = styled.div`
@@ -32,6 +34,32 @@ width: 100%; padding: 10px;
 margin-bottom: 10px;
 border: 1px solid #ddd;
 border-radius: 5px; box-sizing: border-box;
+padding-left: 45px;
+transition: border-color 0.4s;
+&:focus{
+  border-color: #007bff;
+  outline: none;
+}
+&::placeholder{opacity: 0;}
+`
+const InputWrapper = styled.div`
+position: relative;
+margin-bottom: 20px;
+input:focus + label,
+input:not(:placeholder-shown) + label
+{
+  top: 4px;
+  left: 4px;
+  font-size: 8px;
+  color: #007bff;
+}
+`
+const Label = styled.label`
+position: absolute;
+top: 10px; left: 10px;
+font-size: 14px; color: #999;
+transition: all 0.3s;
+pointer-events: none;
 `
 const Button = styled.button`
 width: 100%;
@@ -45,6 +73,38 @@ color: #fff; cursor: pointer;
 
 
 function Login() {
+
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [error, setError] = useState();
+  // const history = useHistory();
+  const navigate = useNavigate ()
+
+  const errorMsg = (errorcode) =>{
+    const firebaseError = {
+      'auth.user-not-found' : "이에일 혹은 비밀번호가 잘못 되었습니다.",
+      'auth.worong-password' : "이메일 혹은 비밀번호가 잘못 되었습니다.",
+      'auth/Invalid-email' : "이메일 혹은 비밀번호가 잘못 되었습니다.",
+    }
+    return firebaseError[errorcode] || '알 수 없는 에러가 발생했습니다.'
+  }
+
+
+
+
+  const LoginFrom = async (e) =>{
+    e.preventDefault();
+    try{
+      const userLogin = await signInWithEmailAndPassword(firebaseAuth, email, password);
+      const user = userLogin.user;
+      // console.log(user)
+    }
+    catch(error){
+      setError(errorMsg(error.code));
+console.log(error.code)
+    }
+  }
+
   return (
     <>
       <Container>
@@ -52,10 +112,24 @@ function Login() {
         <SignUp>
 
           <Title>로그인</Title>
-          <Input type="email" className='email' placeholder='이메일' />
-          <Input type="password" className='password' placeholder='비밀번호' />
-          <Button>로그인</Button>
+          {email} {password}
+          <form onSubmit={LoginFrom}>
+          <InputWrapper>
+          <Input type="email" className='email' placeholder='이메일' onch={(e)=>{
+            setEmail(e.target.value)
+          }} required />
+          <Label>이메일</Label>
+          </InputWrapper>
 
+          <InputWrapper>
+          <Input type="password" className='password' placeholder='비밀번호' onChange={(e)=>{
+            setPassword(e.target.value)
+          }} />
+          <Label>패스워드</Label>
+          </InputWrapper>
+          <Button>로그인</Button>
+          </form>
+          <p>{error}</p>
         </SignUp>
 
       </Container>

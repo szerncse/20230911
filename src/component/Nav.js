@@ -160,10 +160,10 @@ function Nav() {
     const [isHeight, setisHeight] = useState();
     const SubMenuHeight = (e)=>{
         const list = document.querySelectorAll(".sub_list")[e];
-        console.log(list);
+        // console.log(list);
         const listLength = list.querySelectorAll("li").length;
         const value = listLength * 43+"px";
-        console.log(value);
+        // console.log(value);
 
         return setisHeight(value);
 
