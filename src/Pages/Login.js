@@ -65,7 +65,7 @@ const Button = styled.button`
 width: 100%;
 padding: 10px;
 border-radius: 5px;
-background-color: #007bff;
+background-color: #483C19;
 border: none;
 color: #fff; cursor: pointer;
 `
@@ -94,6 +94,7 @@ function Login() {
 
   const LoginFrom = async (e) =>{
     e.preventDefault();
+
     try{
       const userLogin = await signInWithEmailAndPassword(firebaseAuth, email, password);
       const user = userLogin.user;

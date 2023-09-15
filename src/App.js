@@ -9,7 +9,7 @@ import Store from "./Store";
 import { Provider, useSelector } from "react-redux";
 import Member from "./Pages/Member";
 import Login from "./Pages/Login";
-
+import Example from "./Example/Example";
 
 
 
@@ -52,7 +52,7 @@ function Inner(){
     const DarkMode = theme === 'light' ? light : dark;
   
 
-return(
+  return(
 
   <ThemeProvider theme={DarkMode}>
   <GlobalStyle/>
@@ -62,6 +62,8 @@ return(
     <Route path="/" element={<Main/>}></Route>
     <Route path="/Member" element={<Member/>}></Route>
     <Route path="/Login" element={<Login/>}></Route>
+    <Route path="/Example" element={<Example/>}></Route>
+  
   </Routes>
 </ThemeProvider>
 )

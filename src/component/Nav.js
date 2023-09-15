@@ -145,9 +145,9 @@ margin-top: 45px;
         li{
             border: 1px solid #ddd;
             padding: 10px; border-radius: 4px;
-            background-color:purple;
+                background-color:#F9DDE7;
             &:nth-child(2){
-                background-color: green;
+                background-color: #9CD87E;
             }
             a{color: #fff;}
         }
