@@ -1,6 +1,7 @@
 import { faArrowRightFromBracket, faLock, faUser, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { styled } from 'styled-components'
 
@@ -157,6 +158,7 @@ margin-top: 45px;
 
 function Nav() {
 
+    const userState = useSelector(state =>state.user);
     const [isHeight, setisHeight] = useState();
     const SubMenuHeight = (e)=>{
         const list = document.querySelectorAll(".sub_list")[e];
@@ -310,9 +312,10 @@ function Nav() {
             <NavMember>
             <ul>
                 <li>
-                    <NavLink to="/login">
-                        <FontAwesomeIcon icon={faLock}></FontAwesomeIcon>
-                        로그인
+                    <NavLink to={userState.data?.nickname ? "/logout"  : "/login"}>
+                        <FontAwesomeIcon icon={faLock}></FontAwesomeIcon> 
+                        {userState.data?.nickname ? "로그아웃" : "로그인"}
+                     
                     </NavLink>
                 </li>
                 <li>

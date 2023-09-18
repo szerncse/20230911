@@ -43,7 +43,7 @@ flex-wrap: wrap;
 
 
 
-function Modal({error, isModal, setisModal}) {
+function Modal({error, onClose}) {
 
 
 
@@ -55,7 +55,7 @@ function Modal({error, isModal, setisModal}) {
       <ModalContent>
         <FontAwesomeIcon icon={faTriangleExclamation} />
         <p>{error}</p>
-        <Button onClick={()=>{setisModal(!isModal)}} >확인</Button>
+        <Button onClick={onClose} >확인</Button>
       </ModalContent>
     </ModalBackground> }
 

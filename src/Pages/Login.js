@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { firebaseAuth, signInWithEmailAndPassword } from './../firebase'
 import {useNavigate} from 'react-router-dom'
+import { collection, doc, getDoc, getFirestore } from 'firebase/firestore'
+import { logIn, loggedIn } from '../Store'
+import { useDispatch } from 'react-redux'
 
 
 const Container = styled.div`
@@ -78,7 +81,8 @@ function Login() {
   const [password, setPassword] = useState();
   const [error, setError] = useState();
   // const history = useHistory();
-  const navigate = useNavigate ()
+  const navigate = useNavigate ();
+  const dispatch = useDispatch();
 
   const errorMsg = (errorcode) =>{
     const firebaseError = {
@@ -97,10 +101,22 @@ function Login() {
 
     try{
       const userLogin = await signInWithEmailAndPassword(firebaseAuth, email, password);
+      // console.log(userLogin)
       const user = userLogin.user;
       // console.log(user)
-    }
-    catch(error){
+      sessionStorage.setItem("users", user.uid)
+      dispatch(logIn(user.uid));
+
+      const userDoc = doc(collection(getFirestore(), "users"), user.uid);
+      const userDocsnapshot = await getDoc(userDoc);
+      // console.log(userDocsnapshot.data())
+      if(userDocsnapshot.exists()){
+        const userData =userDocsnapshot.data();
+        dispatch(loggedIn(userData));
+        navigate(-1);
+      }
+    
+    }catch(error){
       setError(errorMsg(error.code));
 console.log(error.code)
     }
@@ -113,10 +129,10 @@ console.log(error.code)
         <SignUp>
 
           <Title>로그인</Title>
-          {email} {password}
+          {/* {email} {password} */}
           <form onSubmit={LoginFrom}>
           <InputWrapper>
-          <Input type="email" className='email' placeholder='이메일' onch={(e)=>{
+          <Input type="email" className='email' placeholder='이메일' onChange={(e)=>{
             setEmail(e.target.value)
           }} required />
           <Label>이메일</Label>

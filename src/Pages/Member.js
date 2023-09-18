@@ -202,7 +202,8 @@ const signUp = async (e) =>{
     <>
 {
   isModal &&
-  <Modal  error={error} isModal={isModal} setisModal={setisModal}/>
+  // <Modal  error={error} isModal={isModal} setisModal={setisModal}/>
+  <Modal  error={error}  onClose={()=>{setisModal(false)}} />
 }
 
     {/* {

@@ -9,9 +9,9 @@ function Main() {
 
   return (
     <>
-      <p>{a}</p>
+      {/* <p>{a}</p>
       <p></p>
-      <button onClick={()=>{dispatch(changName())}}>변경</button>
+      <button onClick={()=>{dispatch(changName())}}>변경</button> */}
     
     </>
   )
