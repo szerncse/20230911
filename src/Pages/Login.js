@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { firebaseAuth, signInWithEmailAndPassword } from './../firebase'
-import {useNavigate} from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
 import { collection, doc, getDoc, getFirestore } from 'firebase/firestore'
 import { logIn, loggedIn } from '../Store'
 import { useDispatch } from 'react-redux'
@@ -48,6 +48,22 @@ transition: border-color 0.4s;
 const InputWrapper = styled.div`
 position: relative;
 margin-bottom: 20px;
+&:last-child{
+  margin-bottom: 0; margin-top: 20px;
+  justify-content: flex-end;
+  display: flex;
+  column-gap: 20px;
+  a{
+    background-color: #40e0d0;
+    font-size: 14px;
+    text-align: center; padding: 5px 20px;
+    border-radius: 5px;
+    color: #fff;
+  &:last-child{
+    background-color: #036;
+  }
+  }
+}
 input:focus + label,
 input:not(:placeholder-shown) + label
 {
@@ -146,7 +162,11 @@ console.log(error.code)
           </InputWrapper>
           <Button>로그인</Button>
           </form>
-          <p>{error}</p>
+          <InputWrapper>
+          <NavLink to="/findemail">이메일/비밀번호 재설정</NavLink>
+          <NavLink to="/member">회원가입</NavLink>
+          </InputWrapper>
+         
         </SignUp>
 
       </Container>

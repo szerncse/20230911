@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faTriangleExclamation  } from '@fortawesome/free-solid-svg-icons'
 import Modal from '../Modal/Modal'
+import { useDispatch, useSelector } from 'react-redux'
+import { logIn } from '../Store'
 
 
 
@@ -96,12 +98,12 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [passwordConfirm, setPasswordConfirm] = useState("");
 const [nickname, setNickname] = useState("");
-const [phone, setPhone] = useState("");
+const [phoneNumber, setPhoneNumber] = useState("");
 const [error, setError] = useState("");
 const [eye, setEye] = useState([0,0]);
 const [isModal, setisModal] = useState(false);
-
 const navigate = useNavigate ()
+const dispatch = useDispatch();
 
 const toggleEye = (index) =>{
 const newEye = [...eye];
@@ -113,12 +115,12 @@ const newEye = [...eye];
   //그리고 그 값을 쓰기 전용일 setEye에 새로운 배열값을 저장한다. 
 }
 
-const phoneNumber = (e) =>{
+const PhoneNumber = (e) =>{
 
 let value = e.target.value;
     e.target.value = e.target.value.replace(/[^0-9]/g, '').replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/-{1,2}$/g, "");
 
- setPhone(value);
+    setPhoneNumber(value);
 }
 
 
@@ -133,9 +135,10 @@ const errorMsg = (errorCode) =>{
 
 return firebaseError[errorCode] || '알 수 없는 에러가 발생하였습니다.'}
 
-const isvalidphon = (phone) =>{
+//phone-> phoneNumber
+const isvalidphon = (phoneNumber) =>{
   const regex =  /^01[0-9]-[0-9]{3,4}-[0-9]{4}$/
-  return regex.test(phone)
+  return regex.test(phoneNumber)
 }
 const isvalidEmail = (email) =>{
   const regex = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/
@@ -150,7 +153,7 @@ const signUp = async (e) =>{
     errorMessage = "이름";
   }else if(nickname.length === 0){
     errorMessage = "닉네임";
-  }else if(!isvalidphon(phone)){
+  }else if(!isvalidphon(phoneNumber)){
   setError("유효한 전화번호를 입력해주세요")
   setisModal(!isModal)
   return;
@@ -181,12 +184,16 @@ const signUp = async (e) =>{
     const userProfile = {
       name,
       nickname,
-      phone
+      phoneNumber,
+      email
     }
 
     console.log(userProfile)
 
     await setDoc(doc(getFirestore(), "users", user.uid), userProfile)
+
+    sessionStorage.setItem("users", user.uid)
+    dispatch(logIn(user.uid));
 
     alert("회원가입이 완료 되었습니다.");
     navigate('/');
@@ -198,24 +205,19 @@ const signUp = async (e) =>{
   }
 
 }
+
+
+const userState = useSelector(state =>state.user);
   return (
+
     <>
 {
   isModal &&
   // <Modal  error={error} isModal={isModal} setisModal={setisModal}/>
   <Modal  error={error}  onClose={()=>{setisModal(false)}} />
 }
-
-    {/* {
-      isModal &&
-    <ModalBackground>
-      <ModalContent>
-        <FontAwesomeIcon icon={faTriangleExclamation} />
-        <p>{error}</p>
-        <Button onClick={()=>{setisModal(!isModal)}}>확인</Button>
-      </ModalContent>
-    </ModalBackground>
-      } */}
+{
+  userState.loggedIn ? <Modal error="이미 로그인 중입니다." onClose={()=>navigate('/')}/> :
 
       <Container>
 
@@ -228,7 +230,7 @@ const signUp = async (e) =>{
           <Input defaultValue={nickname} onChange={(e)=>{
             setNickname(e.target.value)}} type="text" className='nickname' placeholder='닉네임' />
 
-          <Input onInput={phoneNumber}
+          <Input onInput={PhoneNumber}
             maxLength={13}  type="text" className='phone' placeholder='전화번호' />
 
           <Input  value={email} type='email' onChange={(e) =>{
@@ -254,7 +256,7 @@ const signUp = async (e) =>{
         </SignUp>
 
       </Container>
-      
+      }
 
     </>
   )
