@@ -302,7 +302,7 @@ function Nav() {
                                 {
                                     SubData[e.link].map((el,index)=>{
                                         return (
-                                            <li key={index}><NavLink to={el.title}>{el.title}</NavLink></li>
+                                            <li key={index}><NavLink to={el.link}>{el.title}</NavLink></li>
                                         )
                                     })
                                 }
