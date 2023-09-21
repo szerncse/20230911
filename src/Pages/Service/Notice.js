@@ -98,7 +98,7 @@ function Notice() {
         posts.map((e,i)=>{
           return (
             <List key={i}>
-              <Listitem>{posts.length -1}</Listitem>
+              <Listitem>{posts.length -i}</Listitem>
               <Listitem><Link to={`/view/notice/${e.id}`}>{e.title}</Link></Listitem>
               <Listitem>{e.nickname}</Listitem>
               <Listitem>{e.timestamp.toDate().toLocaleDateString()}</Listitem>
@@ -115,5 +115,7 @@ function Notice() {
     </>
   )
 }
+
+//  <Listitem>{posts.length -i}</Listitem> 글자 순서대로
 
 export default Notice

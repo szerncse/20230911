@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Modal from '../Modal/Modal';
+import { useEffect } from 'react';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 const Container = styled.div`
   width: 100%;
@@ -41,18 +43,7 @@ const Heading = styled.h3`
   }
 `;
 
-const UploadButton = styled.button`
-  height: 30px;
-  background-color: #c6c6c6;
-  color: white;
-  border-radius: 5px;
-  padding: 2px 10px;
-  font-size: 13px;
 
-  &:hover {
-    background-color: #2ed090;
-  }
-`;
 
 const ContentWrapper = styled.div`
   width: auto;
@@ -95,13 +86,39 @@ const ContentLabel = styled.p`
 function Write() {
 
   const [txtTitle, setTxtTitle] = useState("");
-  const {board} = useParams()
+  const {board, view} = useParams()
   
   const boards = ["notice", "online", "qna", "gallery"];
-  const [isModal, setIsModal] = useState(true);
+  const [isModal, setIsModal] = useState(view ? false : true);
   const navigate = useNavigate();
   const memberProfile = useSelector(state => state.user);
-  console.log(memberProfile)
+
+  const [message, setMessage] = useState("");
+  const [postData, setpostdata] = useState(null);
+
+  useEffect(()=>{
+    if(board && view){
+      const FetchData = async () =>{
+        const postRef = doc(getFirestore(), board, view);
+        const postSnapshot = await getDoc(postRef);
+        console.log(postSnapshot.data())
+        if(postSnapshot.exists()){
+          setIsModal(false)
+          setTxtTitle(postSnapshot.data().title)
+          setpostdata(postSnapshot.data())
+        }else{
+            setIsModal(true)
+            setMessage("해당 문서가 존재하지않습니다.")
+          
+        }
+      
+    }
+    FetchData()
+  }
+}, [board, view])
+
+
+  // console.log(memberProfile)
   if(!memberProfile.loggedIn){
     return(
       <>
@@ -122,26 +139,30 @@ function Write() {
   }
 
   return (
-    
+    <>
+    {
+      isModal && view && <Modal error={message} onClose={()=>{
+        setIsModal(false); }}/>
+    }
     <Container>
       <InnerContainer>
         <Header>
-          <Heading>글쓰기</Heading>
-          <UploadButton>등록하기</UploadButton>
+          <Heading>{board && view ? "글수정" : "글쓰기"}</Heading>
         </Header>
 
         <ContentWrapper>
           <ContentInner>
             <Title>제목</Title>
-            <TextInput type="text" onChange={(e)=>{setTxtTitle(e.target.value)}} />
+            <TextInput defaultValue={postData && postData.title} type="text" onChange={(e)=>{setTxtTitle(e.target.value)}} />
           </ContentInner>
           <ContentInputWrapper>
             <ContentLabel>내용</ContentLabel>
-            <Ckeditor title={txtTitle}/>
+            <Ckeditor title={txtTitle} postData={postData}/>
           </ContentInputWrapper>
         </ContentWrapper>
       </InnerContainer>
     </Container>
+    </>
   );
 }
 
