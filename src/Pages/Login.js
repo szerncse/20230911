@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { firebaseAuth, signInWithEmailAndPassword } from './../firebase'
+import { firebaseAuth, signInWithEmailAndPassword ,GoogleAuthProvider, GithubAuthProvider, signInWithPopup} from './../firebase'
 import {NavLink, useNavigate} from 'react-router-dom'
 import { collection, doc, getDoc, getFirestore } from 'firebase/firestore'
 import { logIn, loggedIn } from '../Store'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
+
+
+
 
 
 const Container = styled.div`
@@ -88,6 +93,23 @@ background-color: #483C19;
 border: none;
 color: #fff; cursor: pointer;
 `
+const SnsButton = styled.button`
+display: flex;
+align-items: center; padding: 8px 12px;
+border: none; border-radius: 4px;
+cursor: pointer;
+background-color: ${props => props.$bgColor || 'gray'};
+color: ${props => props.$Color || 'white'};
+font-size: 16px; width: 50%;
+transition: 0.3s;
+&:hover{
+  background-color: ${props => props.$horerbgColor || '#666'};
+}
+svg{
+  margin-right: 8px;
+}
+`
+
 
 
 
@@ -99,7 +121,7 @@ function Login() {
   // const history = useHistory();
   const navigate = useNavigate ();
   const dispatch = useDispatch();
-
+  const userState = useSelector(state =>state.user);
   const errorMsg = (errorcode) =>{
     const firebaseError = {
       'auth.user-not-found' : "이에일 혹은 비밀번호가 잘못 되었습니다.",
@@ -138,8 +160,43 @@ console.log(error.code)
     }
   }
 
+
+  const snsLogin= async (data)=>{
+   let provider;
+
+   switch(data){
+    case 'google':
+      provider= new GoogleAuthProvider();
+    break;
+    case 'github': 
+     provider = new GithubAuthProvider();
+    break;
+    default:
+      return;
+   }
+   try {
+    const resuit = await signInWithPopup(firebaseAuth, provider)
+    const user = resuit.user;
+    console.log(user)
+    sessionStorage.setItem("users", user.uid)
+    dispatch(logIn(user.uid))
+    navigate("/member", 
+    {
+      name: user.displayName,
+      nickname: user.email,
+      photoURL: user.photoURL
+    })
+
+
+
+   } catch (error) {
+    setError(errorMsg(error));
+   }
+  }
+
   return (
     <>
+
       <Container>
 
         <SignUp>
@@ -166,9 +223,16 @@ console.log(error.code)
           <NavLink to="/findemail">이메일/비밀번호 재설정</NavLink>
           <NavLink to="/member">회원가입</NavLink>
           </InputWrapper>
-         
-        </SignUp>
 
+          <InputWrapper>
+            <SnsButton onClick={()=> {snsLogin('google')}} $bgColor="#db4437" $hoverbgColor="#b33225">
+              <FontAwesomeIcon icon={faGoogle} /> Login With Google
+            </SnsButton>
+            <SnsButton onClick={()=> {snsLogin('github')}} $bgColor="#333" $hoverbgColor="#111" >
+                <FontAwesomeIcon icon={faGithub} /> Login With Github
+            </SnsButton>
+          </InputWrapper>
+        </SignUp>
       </Container>
 
 

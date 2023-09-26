@@ -56,6 +56,7 @@ const Button = styled.button`
 function Notice() {
 
   const [posts, setposts] = useState([]);
+  const [likes, setLikes] = useState(Array(posts.length).fill(1));
   
 
   useEffect(()=>{
@@ -77,9 +78,25 @@ function Notice() {
     fetchPosts()
   },[])
 
+  const toggleLike = (index) =>{
+    // 1. 원래 값을 복사
+    // 2. 복사한 배열의 원하는 인덱스 번호의 값을 변경
+    // 3. 그 값을 원래 값에 붙여 넣기
+    const newLikes = [...likes];
+    newLikes[index] = !newLikes[index]
+    setLikes(newLikes);
+  }
+
   if(posts.length === 0){
     return <div>로딩중</div>
   }
+
+
+
+
+
+
+
 
 
   return (
@@ -93,6 +110,7 @@ function Notice() {
         <Listitem>작성자</Listitem>
         <Listitem>작성일</Listitem>
         <Listitem>조회수</Listitem>
+        <Listitem>좋아요</Listitem>
       </List>
       {
         posts.map((e,i)=>{
@@ -103,6 +121,7 @@ function Notice() {
               <Listitem>{e.nickname}</Listitem>
               <Listitem>{e.timestamp.toDate().toLocaleDateString()}</Listitem>
               <Listitem>{e.view}</Listitem>
+              <Listitem onClick={()=>{toggleLike(i) }}>{likes[i] ? '❤' : '🤍'}</Listitem>
             </List>
           )
         })

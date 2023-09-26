@@ -95,6 +95,9 @@ function Write() {
 
   const [message, setMessage] = useState("");
   const [postData, setpostdata] = useState(null);
+  const uid = sessionStorage.getItem("users");
+  const [userUid, setUserUid] = useState(uid)
+
 
   useEffect(()=>{
     if(board && view){
@@ -103,9 +106,14 @@ function Write() {
         const postSnapshot = await getDoc(postRef);
         console.log(postSnapshot.data())
         if(postSnapshot.exists()){
-          setIsModal(false)
-          setTxtTitle(postSnapshot.data().title)
+
           setpostdata(postSnapshot.data())
+          setTxtTitle(postSnapshot.data().title)
+          if(uid !== postSnapshot.data().uid){
+            setIsModal(true)
+            setMessage("권한없음")
+            return;
+          }
         }else{
             setIsModal(true)
             setMessage("해당 문서가 존재하지않습니다.")

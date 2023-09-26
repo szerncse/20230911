@@ -25,6 +25,8 @@ import Modal from "./Modal/Modal";
 import { useState } from "react";
 import Notpage from "./Pages/Notpage";
 
+
+
 function App() {
   
 console.log(process.env)
@@ -62,10 +64,9 @@ function Inner(){
   
 const theme = useSelector(state => state.dark);
 const DarkMode = theme === 'light' ? light : dark;
+const dispatch = useDispatch();
 const userState = useSelector(state =>state.user);
 console.log(userState)
-  
-const dispatch = useDispatch();
 const uid = sessionStorage.getItem("users");
 
 
@@ -115,7 +116,7 @@ fetchUser();
     <Route path="/Login" element={<Login/>}></Route>
     <Route path="/Logout" element={<Logout/>}></Route>
     <Route path="/Example" element={<Example/>}></Route>
-    <Route path="/Modify" element={<Modify/>}></Route>
+    <Route path="/Modify" element={<Member/>}></Route>
     <Route path="/findemail" element={<FindEmail/>}></Route>
 
     <Route path="/write/:board" element={<Write/>}></Route>
