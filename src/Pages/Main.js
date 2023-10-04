@@ -1,17 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { changName } from '../Store'
+import Product from './Product'
+import { useMemo } from 'react'
+import Banner from '../component/home/Banner'
+
+
+
+const Test = ()=>{
+  return (
+    <>
+    <p>테스트</p>
+    </>
+    
+  )
+}
+
 
 function Main() {
+const resuit = useMemo(()=>{
+  return Test()
+}, [])
 
-  const a = useSelector(state => state.user)
-  const dispatch = useDispatch()
+
+  useEffect(()=>{
+    console.log("완료!")
+    return ()=>{
+      console.log("완료가 되기전 실행됨")
+    }
+  }, [])
+
+ 
+
+  
+
+
+  let [count, setCount] = useState(0)
+
+
 
   return (
     <>
-      {/* <p>{a}</p>
-      <p></p>
-      <button onClick={()=>{dispatch(changName())}}>변경</button> */}
+    <Banner />
+    {/* <Test />
+     {resuit}
+     <p>{count}</p>
+     <Product />
+     <button onClick={()=>{setCount(count + 1)}}>버튼</button> */}
     
     </>
   )
