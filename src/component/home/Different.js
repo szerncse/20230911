@@ -37,10 +37,10 @@ position: relative;
 &::after{
     content: "";
     position: absolute;
-    width: 3%;
+    width: 10%;
     height: 2px;
     background: #111;
-    left: 50%; bottom: 45%; transform: translate(-50%, -50%);
+    left: 50%; bottom: 10%; transform: translate(-50%, -50%);
     /* left: 40%; top: 0; */
 }
 `
