@@ -130,7 +130,7 @@ function Different() {
                 {
                 data.map((e,i)=>{
                     return(
-                <li>
+                <li key={i}>
                     <p>{e.title}</p>
                     {
                     isview&&
